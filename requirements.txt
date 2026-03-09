@@ -1,0 +1,5 @@
+Celery
+Flask
+Redis
+Kafka-python
+cofluent-kafka
