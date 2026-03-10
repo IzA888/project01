@@ -2,4 +2,5 @@ Celery
 Flask
 Redis
 Kafka-python
-cofluent-kafka
+confluent-kafka
+langchain_community

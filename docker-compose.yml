@@ -1,0 +1,53 @@
+services:
+  #"cérebro"
+  ollama:
+    image: ollama/ollama:qwen-3.5
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+  # Descomente abaixo SE tiver GPU NVIDIA e o NVIDIA Container Toolkit instalado
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+  
+  #memória
+  redis:
+    imagem: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    
+  #mensageiro
+  kafka:
+  imagem: bitnami/kafka:latest
+  enviromnent:
+    - KAFKA_CFG_NODE_ID=1
+    - KAFKA_CFG_PROCESS_ROLES=controller, broker
+    - KAFKA_CFGLISTENER=PLAINTEXT://:9093, CONTROLLER://:9092
+    - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+  ports:
+    - "9092:9092"
+    # - "9093:9093"
+
+  #o agente
+  ai-agent:
+    build: .
+    container_name: flask_ai_agent
+    depends_on:
+      - ollama
+      - redis
+      - kafka
+    enviroment:
+      - OLLAM_HOST=http://ollama:11434
+      - AGENT_MODEL=qwen-3.5:0.8b
+      - REDIS_HOST=redis
+      - KAFKA_BROKER=kafka:9092
+
+  volumes:
+    ollama_data:

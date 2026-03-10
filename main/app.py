@@ -1,11 +1,7 @@
-from flask import Flask, request, jsonify, render_tmeplate
-from main.agents import SimpleAgent
+from flask import Flask, request, jsonify
 from main.tasks import run_ia_agent_task
 
 app = Flask(__name__)
-
-#Instancionando o agente
-researche = SimpleAgent("Aurora", "Pesquisadora")
 
 @app.route('/')
 def index():
@@ -21,9 +17,6 @@ def run_agent():
 
     if not task:
         return jsonify({"error": "Nenhuma tarefa encontrada"}), 400
-    
-    # result = researche.Execute_task(task)
-    # return jsonify({"resultado": result})
 
     return jsonify({
         "task_id": tk.id,
