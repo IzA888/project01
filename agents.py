@@ -1,12 +1,12 @@
 import os
-from langchain_community.llms import Ollama
-from langchain.prompts import ChatPromptTemplate
+from langchain_ollama import ChatOllama
+from langchain_core.prompts import ChatPromptTemplate
 
 class OllamaAgent:
     def __init__(self):
         #pega url do ambiente
-        ollama_base_url = os.getenv("OLLAMA_HOST", "http://ollama:11434")
-        self.llm = Ollama(model="qwen3.5:0.8b", base_url=ollama_base_url)
+        ollama_base_url = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
+        self.llm = ChatOllama(model="qwen3.5:0.8b", base_url=ollama_base_url)
 
     def execute(self, prompt):
        return self.llm.invoke(prompt)
@@ -24,5 +24,8 @@ class OllamaAgent:
         #encadeia o prompt com o modelo
         chain = prompt | self.llm
         #executa o pensamento
-        response = chain.invoke({"task": task, "contexto": context})
-        return response
+        try:
+            response = chain.invoke({"task": task, "contexto": context})
+            return response
+        except Exception as e:
+            return f"Erro ao conectar com Ollama: {str(e)}"

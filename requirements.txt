@@ -1,6 +1,6 @@
 Celery
 Flask
 Redis
-Kafka-python
 confluent-kafka
-langchain_community
+langchain-ollama
+langchain-core

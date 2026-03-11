@@ -2,7 +2,7 @@
 ` pip install -r requirements.txt`
 
 2. Como rodar o protótipo:
-Inicie o Redis (via Docker ou local).
+Inicie o Redis (via Docker ou local): `docker run -d --name redis -p 6379:6379 redis:alpine`
 
 Inicie o Worker: `celery -A tasks worker --loglevel=info.`
 

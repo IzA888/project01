@@ -1,2 +1,4 @@
 # Pasta de ambiente virtual
 \.venv
+__pycache__
+.vscode

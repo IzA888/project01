@@ -1,7 +1,7 @@
 from celery import Celery
 from flask import jsonify
 
-from main.agents import OllamaAgent
+from agents import OllamaAgent
 
 #Configurar o celery para usar o redis como broker
 celery_app = Celery('tasks', broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')

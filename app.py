@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from main.tasks import run_ia_agent_task
+from tasks import run_ia_agent_task
 
 app = Flask(__name__)
 
