@@ -20,9 +20,9 @@ docker-compose up -d
 ```
 
 Baixar o modelo na IA (Necessário apenas na primeira vez):
-O container do Ollama sobe vazio. Precisamos mandar ele baixar o Llama3:
+O container do Ollama sobe vazio. Precisamos mandar ele baixar o qwen3.5:
 ```bash
-docker exec -it ollama ollama pull llama3
+docker exec -it ollama ollama pull qwen3.4:0.8b
 ```
 
 Verificar os logs:
