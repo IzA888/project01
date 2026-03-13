@@ -1,7 +1,7 @@
 services:
   #"cérebro"
   ollama:
-    image: ollama/ollama:qwen-3.5
+    image: ollama/ollama
     container_name: ollama
     ports:
       - "11434:11434"
@@ -22,34 +22,27 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
-    
-  #mensageiro
-  kafka:
-    image: bitnami/kafka:latest
-    environment:
-      - KAFKA_CFG_NODE_ID=1
-      - KAFKA_CFG_PROCESS_ROLES=controller, broker
-      - KAFKA_CFGLISTENER=PLAINTEXT://:9093, CONTROLLER://:9092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
-    ports:
-      - "9092:9092"
-      # - "9093:9093"
-
   #o agente
   ai-agent:
     build: .
     ports:
       - "5000:5000"
     container_name: flask_ai_agent
+    networks:
+      - rede-agentes-fraude
     depends_on:
       - ollama
       - redis
-      - kafka
     environment:
       - OLLAM_HOST=http://ollama:11434
-      - AGENT_MODEL=qwen-3.5:0.8b
+      - AGENT_MODEL=qwen3.5:0.8b
       - REDIS_HOST=redis
-      - KAFKA_BROKER=kafka:9092
+      #aponta para o nome do serviço kafka na aplicação principal("app")
+      - KAFKA_BROKER=kafka:29092
 
 volumes:
   ollama_data:
+
+networks:
+  rede-agentes-fraude:
+    external: true
