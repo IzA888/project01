@@ -1,4 +1,7 @@
+import threading
+
 from flask import Flask, request, jsonify
+from kafka_consumer import start_listening
 from tasks import run_ia_agent_task
 
 app = Flask(__name__)
@@ -33,5 +36,9 @@ def get_status(task_id):
     })
 
 if __name__ == '__main__':
+    # inicar o kafka em segundo plano
+    kafka_thread = threading.Thread(target=start_listening, daemon=True)
+    kafka_thread.start()
+    
     # host='0.0.0.0' é o que permite o acesso via Docker
     app.run(host='0.0.0.0', port=5000,debug=True)

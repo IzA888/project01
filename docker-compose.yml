@@ -3,6 +3,8 @@ services:
   ollama:
     image: ollama/ollama
     container_name: ollama
+    networks:
+      - rede-agentes-fraude
     ports:
       - "11434:11434"
     volumes:
@@ -15,11 +17,27 @@ services:
     #         - driver: nvidia
     #           count: 1
     #           capabilities: [gpu]
+  #automatizar pull do model do Ollama
+  ollama-pull-model:
+    image: ollama/ollama
+    container_name: ollama_pull_model
+    networks:
+      - rede-agentes-fraude
+    environment:
+      - OLLAMA_HOST=ollama:11434
+    entrypoint: /bin/sh
+    command: >
+     -c "sleep 5; ollama pull qwen2.5:0.5b"
+     echo 'Modelo baixado com sucesso!'
+    depends_on:
+      - ollama
   
   #memória
   redis:
     image: redis:alpine
     container_name: redis
+    networks:
+    - rede-agentes-fraude
     ports:
       - "6379:6379"
   #o agente
@@ -39,6 +57,19 @@ services:
       - REDIS_HOST=redis
       #aponta para o nome do serviço kafka na aplicação principal("app")
       - KAFKA_BROKER=kafka:29092
+  celery-worker:
+    build: .
+    container_name: celery_worker
+    #inicia o worker do celery
+    command: celery -A tasks worker --loglevel=info
+    networks:
+      - rede-agentes-fraude
+    depends_on:
+      - ollama
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - OLLAMA_HOST=ollama
 
 volumes:
   ollama_data:

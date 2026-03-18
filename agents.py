@@ -6,10 +6,11 @@ class OllamaAgent:
     def __init__(self):
         #pega url do ambiente
         ollama_base_url = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
-        self.llm = ChatOllama(model="qwen3.5:0.8b", base_url=ollama_base_url)
+        self.llm = ChatOllama(model="qwen2.5:0.5b", base_url=ollama_base_url)
 
-    def execute(self, prompt):
-       return self.llm.invoke(prompt)
+    def execute(self, task, context=""):
+        prompt = f"Contexto: {context}\n\nTarefa atual: {task}\n\nResponda de forma concisa.Pense passo a passo antes de responder."
+        return self.llm.invoke(prompt)
 
     def think_and_act(self, task, context=""):
         #Sistema de racioncínio para o agente
